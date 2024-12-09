@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence version="2.1"
+			 xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="
+        http://xmlns.jcp.org/xml/ns/persistence
+        http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="primary" transaction-type="JTA">
+
+		<class>com.wizzdi.segmantix.impl.model.Baseclass</class>
+		<class>com.wizzdi.segmantix.impl.model.Basic</class>
+		<class>com.wizzdi.segmantix.impl.model.Clazz</class>
+		<class>com.wizzdi.segmantix.impl.model.OperationCategory</class>
+		<class>com.wizzdi.segmantix.impl.model.OperationGroup</class>
+		<class>com.wizzdi.segmantix.impl.model.OperationToClazz</class>
+		<class>com.wizzdi.segmantix.impl.model.OperationToGroup</class>
+		<class>com.wizzdi.segmantix.impl.model.PermissionGroup</class>
+		<class>com.wizzdi.segmantix.impl.model.PermissionGroupToBaseclass</class>
+		<class>com.wizzdi.segmantix.impl.model.Role</class>
+		<class>com.wizzdi.segmantix.impl.model.RoleToBaseclass</class>
+		<class>com.wizzdi.segmantix.impl.model.RoleToUser</class>
+		<class>com.wizzdi.segmantix.impl.model.SecuredBasic</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityEntity</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityLink</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityLinkGroup</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityOperation</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityTenant</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityUser</class>
+		<class>com.wizzdi.segmantix.impl.model.SecurityWildcard</class>
+		<class>com.wizzdi.segmantix.impl.model.TenantToBaseclass</class>
+		<class>com.wizzdi.segmantix.impl.model.TenantToUser</class>
+		<class>com.wizzdi.segmantix.impl.model.UserToBaseclass</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+	</persistence-unit>
+
+
+</persistence>
