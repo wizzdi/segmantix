@@ -30,4 +30,7 @@ public class CacheImpl implements Cache {
             }
         });
     }
+    public void invalidateAll(){
+        map.clear();
+    }
 }

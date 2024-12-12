@@ -7,7 +7,6 @@
 package com.wizzdi.segmantix.impl.model;
 
 
-import com.wizzdi.segmantix.api.IRoleToUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
@@ -19,7 +18,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 
-public class RoleToUser extends Basic implements IRoleToUser {
+public class RoleToUser extends Basic {
 
     private Role role;
     private SecurityUser user;

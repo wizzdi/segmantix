@@ -1,11 +1,8 @@
 package com.wizzdi.segmantix.app;
 
 import com.wizzdi.segmantix.api.Secured;
-import com.wizzdi.segmantix.impl.model.SecurityTenant;
-import com.wizzdi.segmantix.impl.model.SecurityUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class TestEntity implements Secured {

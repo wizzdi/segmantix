@@ -7,5 +7,5 @@ public interface FieldPathProvider {
     <T extends Secured> Path<String> getCreatorIdPath(From<?,T> r);
     <T extends Secured> Path<String> getTenantIdPath(From<?,T> r);
     <T extends Secured> Path<String> getTypePath(From<?,T> r);
-    <T extends Secured> Path<String> getIdPath(From<?,T> r);
+    <T extends Secured> Path<String> getSecurityId(From<?,T> r);
 }

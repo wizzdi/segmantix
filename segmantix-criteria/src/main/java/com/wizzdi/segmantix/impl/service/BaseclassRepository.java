@@ -23,7 +23,6 @@ import com.wizzdi.segmantix.service.SecurityPermissions;
 import jakarta.persistence.criteria.CommonAbstractCriteria;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.From;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class BaseclassRepository  {
@@ -151,12 +149,11 @@ public class BaseclassRepository  {
 
 		SecurityPermissions securityPermissions = getSecurityPermissions(securityContext);
 		List<Predicate> securityPreds = new ArrayList<>();
-		AtomicReference<Join<T, IPermissionGroupToBaseclass>> join = new AtomicReference<>(null);
 		Path<String> creatorIdPath = fieldPathProvider.getCreatorIdPath(r);
 		securityPreds.add(cb.equal(creatorIdPath, securityContext.securityUser().getId()));//creator
 		//user
 		SecurityPermissionEntry<ISecurityUser> user = securityPermissions.userPermissions();
-		Path<String> idPath = fieldPathProvider.getIdPath(r);
+		Path<String> idPath = fieldPathProvider.getSecurityId(r);
 		if (!user.allowed().isEmpty()) {
 			securityPreds.add(idPath.in(user.allowed().stream().map(f->f.id()).toList()));
 		}
@@ -164,12 +161,13 @@ public class BaseclassRepository  {
 		List<ISecurityTenant> allowAllTenantsWithoutDeny=new ArrayList<>(); // in the case of allow all tenants ,and no denies we can improve the query or avoid a bunch of ors and use an IN clause
 		Path<String> tenantIdPath = fieldPathProvider.getTenantIdPath(r);
 		Path<String> typePath = fieldPathProvider.getTypePath(r);
+		List<String> userDeniedIds = userDenied.stream().map(f -> f.id()).toList();
 		if (specificUserTypePermissionRequired(user,userDenied)) {
 			Set<String> allowedTypes = user.allowedTypes().stream().map(f -> f.type()).collect(Collectors.toSet());
 			securityPreds.add(cb.and(
 					tenantIdPath.in(securityContext.tenants().stream().map(f->f.getId()).toList()),
 					user.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTypes):allowedTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
-					userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDenied.stream().map(f->f.id()).toList()))
+					userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds))
 			));
 
 		}
@@ -183,18 +181,20 @@ public class BaseclassRepository  {
 			IRole roleEntity = role.entity();
 			ISecurityTenant securityTenant = roleEntity.getTenant();
 			if (!role.allowed().isEmpty()) {
+				List<String> roleAllowedIds = role.allowed().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
-						r.in(role.allowed().stream().map(f->f.id()).toList()),
+						idPath.in(roleAllowedIds),
 						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied))
 				));
 			}
 			if (specificRoleTypesPermissionRequired(role,userDenied,user)) {
 				Set<String> roleAllowedTypes = role.allowedTypes().stream().map(f -> f.type()).collect(Collectors.toSet());
+				List<String> roleDeniedIds = role.denied().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
 						cb.equal(tenantIdPath, securityTenant.getId()),
 						role.allowAll() ? cb.and() : typePath!=null?typePath.in(roleAllowedTypes):roleAllowedTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
-						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied.stream().map(f->f.id()).toList())),
-						role.denied().isEmpty() ? cb.and() : cb.not(r.in(role.denied().stream().map(f->f.id()).toList()))
+						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDeniedIds)),
+						role.denied().isEmpty() ? cb.and() : cb.not(r.in(roleDeniedIds))
 
 				));
 			}
@@ -207,15 +207,16 @@ public class BaseclassRepository  {
 		}
 		//tenant
 		List<SecurityPermissionEntry<ISecurityTenant>> tenants = securityPermissions.tenantPermissions();
-		List<SecuredHolder> tenantAllowed = tenants.stream().map(f -> f.allowed()).flatMap(f -> f.stream()).collect(Collectors.toList());
+		List<String> tenantAllowed = tenants.stream().map(f -> f.allowed()).flatMap(f -> f.stream()).map(f->f.id()).collect(Collectors.toList());
 
 		List<SecuredHolder> roleDenied = securityPermissions.rolePermissions().stream().map(f -> f.denied()).flatMap(f -> f.stream()).collect(Collectors.toList());
 
+		List<String> roleDeniedIds = roleDenied.stream().map(f -> f.id()).toList();
 		if (!tenantAllowed.isEmpty()) {
 			securityPreds.add(cb.and(
-					r.in(tenantAllowed),
-					userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied.stream().map(f->f.id()).toList())),
-					roleDenied.isEmpty() ? cb.and() : cb.not(r.in(roleDenied.stream().map(f->f.id()).toList()))
+					idPath.in(tenantAllowed),
+					userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
+					roleDenied.isEmpty() ? cb.and() : cb.not(idPath.in(roleDeniedIds))
 
 			));
 		}
@@ -223,12 +224,13 @@ public class BaseclassRepository  {
 			if (specificTenantTypesPermissionRequired(tenant,userDenied,roleDenied)) {
 				ISecurityTenant tenantEntity = tenant.entity();
 				Set<String> allowedTenantTypes = tenant.allowedTypes().stream().map(f -> f.type()).collect(Collectors.toSet());
+				List<String> tenantDeniedIds = tenant.denied().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
 						cb.equal(tenantIdPath, tenantEntity.getId()),
 						tenant.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTenantTypes):allowedTenantTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
-						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied.stream().map(f->f.id()).toList())),
-						roleDenied.isEmpty() ? cb.and() : cb.not(r.in(roleDenied.stream().map(f->f.id()).toList())),
-						tenant.denied().isEmpty() ? cb.and() : cb.not(r.in(tenant.denied().stream().map(f->f.id()).toList()))
+						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
+						roleDenied.isEmpty() ? cb.and() : cb.not(idPath.in(roleDeniedIds)),
+						tenant.denied().isEmpty() ? cb.and() : cb.not(idPath.in(tenantDeniedIds))
 				));
 			}
 			else{

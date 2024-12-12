@@ -9,7 +9,6 @@ package com.wizzdi.segmantix.impl.model;
 
 
 
-import com.wizzdi.segmantix.api.ITenantToUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
@@ -18,7 +17,7 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
-public class TenantToUser extends Basic implements ITenantToUser {
+public class TenantToUser extends Basic  {
 
     private boolean defaultTenant;
     @ManyToOne(targetEntity = SecurityTenant.class)

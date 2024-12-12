@@ -37,7 +37,7 @@ public class DataSecurityConfig {
             }
 
             @Override
-            public <T extends Secured> Path<String> getIdPath(From<?, T> r) {
+            public <T extends Secured> Path<String> getSecurityId(From<?, T> r) {
                 return r.get("id");
             }
         };
