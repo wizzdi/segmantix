@@ -21,8 +21,9 @@
 
     <modules>
       
-        <module>segmantix-criteria</module>
+        <module>segmantix-jpa-store</module>
         <module>segmantix-core</module>
+        <module>segmantix-jpa-store-spring</module>
 
 
     </modules>
@@ -34,8 +35,9 @@
         <maven.compiler.target>21</maven.compiler.target>
 
 
-      
-        <segmantix-criteria.version>${project.version}</segmantix-criteria.version>
+
+        <segmantix-jpa-store-spring.version>${project.version}</segmantix-jpa-store-spring.version>
+        <segmantix-jpa-store.version>${project.version}</segmantix-jpa-store.version>
         <segmantix-core.version>${project.version}</segmantix-core.version>
 
         <commons-io.version>2.16.1</commons-io.version>
@@ -104,6 +106,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.wizzdi</groupId>
+                <artifactId>segmantix-jpa-store-spring</artifactId>
+                <version>${segmantix-jpa-store-spring.version}</version>
+            </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/eclipselink -->
             <dependency>
@@ -144,8 +151,8 @@
          
             <dependency>
                 <groupId>com.wizzdi</groupId>
-                <artifactId>segmantix-criteria</artifactId>
-                <version>${segmantix-criteria.version}</version>
+                <artifactId>segmantix-jpa-store</artifactId>
+                <version>${segmantix-jpa-store.version}</version>
             </dependency>
 
             <dependency>
@@ -174,6 +181,13 @@
                 <artifactId>testcontainers</artifactId>
                 <version>${testcontainers.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>
