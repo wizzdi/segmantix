@@ -141,7 +141,7 @@ public class SecurityRepository {
 	}
 
 
-	public <T > void addBaseclassPredicates(CriteriaBuilder cb, CommonAbstractCriteria q, From<?, T> r, List<Predicate> predicates, ISecurityContext securityContext) {
+	public <T > void addSecurityPredicates(CriteriaBuilder cb, CommonAbstractCriteria q, From<?, T> r, List<Predicate> predicates, ISecurityContext securityContext) {
 		if (!requiresSecurityPredicates(securityContext)) {
 			return;
 		}

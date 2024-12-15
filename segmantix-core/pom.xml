@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.wizzdi</groupId>
-        <artifactId>segmantix-dependencies</artifactId>
+        <artifactId>segmantix-parent</artifactId>
         <version>${revision}</version>
     </parent>
 

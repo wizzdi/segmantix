@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wizzdi</groupId>
-    <artifactId>segmantix-dependencies</artifactId>
+    <artifactId>segmantix-parent</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>Segmantix Dependencies</name>
-    <description>Segmantix Dependencies</description>
+    <name>Segmantix parent</name>
+    <description>Segmantix Parent</description>
     <url>https://wizzdi.com</url>
 
     <licenses>
@@ -22,6 +22,7 @@
     <modules>
       
         <module>segmantix-core</module>
+        <module>segmantix-dependencies</module>
 
 
     </modules>
