@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wizzdi</groupId>
-    <artifactId>segmantix-parent</artifactId>
+    <artifactId>segmantix-dependencies</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>Segmantix Parent</name>
+    <name>Segmantix Dependencies</name>
     <description>Segmantix Dependencies</description>
     <url>https://wizzdi.com</url>
 
@@ -21,9 +21,7 @@
 
     <modules>
       
-        <module>segmantix-jpa-store</module>
         <module>segmantix-core</module>
-        <module>segmantix-jpa-store-spring</module>
 
 
     </modules>
@@ -108,15 +106,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.wizzdi</groupId>
-                <artifactId>segmantix-jpa-store-spring</artifactId>
-                <version>${segmantix-jpa-store-spring.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/eclipselink -->
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>eclipselink</artifactId>
-                <version>${eclipselink.version}</version>
+                <artifactId>segmantix-core</artifactId>
+                <version>${segmantix-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -124,16 +115,26 @@
                 <version>${slf4j-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-                <version>${eclipselink.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
                 <groupId>jakarta.persistence</groupId>
                 <artifactId>jakarta.persistence-api</artifactId>
                 <version>${jakarta.persistence-api.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/eclipselink -->
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>eclipselink</artifactId>
+                <version>${eclipselink.version}</version>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>junit-jupiter</artifactId>
@@ -146,20 +147,9 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+                <scope>test</scope>
             </dependency>
 
-         
-            <dependency>
-                <groupId>com.wizzdi</groupId>
-                <artifactId>segmantix-jpa-store</artifactId>
-                <version>${segmantix-jpa-store.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.wizzdi</groupId>
-                <artifactId>segmantix-core</artifactId>
-                <version>${segmantix-core.version}</version>
-            </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
             <dependency>
@@ -182,13 +172,7 @@
                 <version>${testcontainers.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

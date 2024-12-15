@@ -261,6 +261,9 @@ public class SecurityRepository {
 	}
 
 	public boolean requiresSecurityPredicates(ISecurityContext securityContext) {
+		if(securityContext==null){
+			return false;
+		}
 		IUser user= securityContext.user();
 		if (user == null) {
 			return false;
