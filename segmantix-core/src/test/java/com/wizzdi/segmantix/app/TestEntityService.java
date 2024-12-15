@@ -1,6 +1,6 @@
 package com.wizzdi.segmantix.app;
 
-import com.wizzdi.segmantix.model.SecurityContext;
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +15,14 @@ public class TestEntityService {
     private TestEntityRepository testEntityRepository;
 
 
-    public TestEntity createTestEntity(TestEntityCreate testEntityCreate, SecurityContext securityContext){
+    public TestEntity createTestEntity(TestEntityCreate testEntityCreate, ISecurityContext securityContext){
         TestEntity testEntity=createTestEntityNoMerge(testEntityCreate,securityContext);
         testEntityRepository.merge(testEntity);
         return testEntity;
 
     }
 
-    public TestEntity createTestEntityNoMerge(TestEntityCreate testEntityCreate, SecurityContext securityContext) {
+    public TestEntity createTestEntityNoMerge(TestEntityCreate testEntityCreate, ISecurityContext securityContext) {
         TestEntity testEntity = new TestEntity();
         testEntity.setId(UUID.randomUUID().toString());
         updateTestEntityNoMerge(testEntityCreate, testEntity);
@@ -46,7 +46,7 @@ public class TestEntityService {
         return update;
     }
 
-    public List<TestEntity> listAllTestEntities(TestEntityFilter filtering, SecurityContext securityContext) {
+    public List<TestEntity> listAllTestEntities(TestEntityFilter filtering, ISecurityContext securityContext) {
         return testEntityRepository.listAllTestEntities(filtering, securityContext);
     }
 

@@ -2,9 +2,10 @@ package com.wizzdi.segmantix.impl.service;
 
 import com.wizzdi.segmantix.api.model.IRole;
 import com.wizzdi.segmantix.api.model.ISecurity;
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import com.wizzdi.segmantix.api.model.ITenant;
 import com.wizzdi.segmantix.api.model.IUser;
-import com.wizzdi.segmantix.api.service.SecurityProvider;
+import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import com.wizzdi.segmantix.impl.model.RoleSecurity;
 import com.wizzdi.segmantix.impl.model.Security;
 import com.wizzdi.segmantix.impl.model.TenantSecurity;
@@ -18,7 +19,7 @@ import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecurityProviderImpl implements SecurityProvider {
+public class SecurityProviderImpl implements SecurityLinkProvider {
 
     private final EntityManager em;
 
@@ -27,7 +28,7 @@ public class SecurityProviderImpl implements SecurityProvider {
     }
 
     @Override
-    public List<ISecurity> getSecuritys(SecurityContext securityContext) {
+    public List<ISecurity> getSecurityLinks(ISecurityContext securityContext) {
         IUser user=securityContext.user();
         List<IRole> roles=securityContext.roles();
         List<ITenant> tenants=securityContext.tenants();

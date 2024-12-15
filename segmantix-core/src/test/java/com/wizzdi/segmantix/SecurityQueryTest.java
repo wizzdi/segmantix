@@ -1,6 +1,7 @@
 package com.wizzdi.segmantix;
 
 
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import com.wizzdi.segmantix.model.Access;
 import com.wizzdi.segmantix.api.model.IInstanceGroup;
 import com.wizzdi.segmantix.api.model.IInstanceGroupLink;
@@ -15,12 +16,11 @@ import com.wizzdi.segmantix.api.model.IUserSecurity;
 import com.wizzdi.segmantix.app.App;
 import com.wizzdi.segmantix.app.OperationService;
 import com.wizzdi.segmantix.app.InstanceGroupLinkProviderImpl;
-import com.wizzdi.segmantix.app.SecurityProviderImpl;
+import com.wizzdi.segmantix.app.SecurityLinkProviderImpl;
 import com.wizzdi.segmantix.app.TestEntity;
 import com.wizzdi.segmantix.app.TestEntityCreate;
 import com.wizzdi.segmantix.app.TestEntityFilter;
 import com.wizzdi.segmantix.app.TestEntityService;
-import com.wizzdi.segmantix.model.SecurityContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -81,7 +81,7 @@ public class SecurityQueryTest {
     @Autowired
     private TestEntityService testEntityService;
     @Autowired
-    private SecurityProviderImpl securityService;
+    private SecurityLinkProviderImpl securityService;
     @Autowired
     private OperationService operationService;
     @Autowired
@@ -95,7 +95,9 @@ public class SecurityQueryTest {
     private Set<String> othersInTenantIds=new HashSet<>();
     private Set<String> othersInOtherTenantIds =new HashSet<>();
 
+record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,List<Role> roles,Operation operation) implements ISecurityContext{
 
+}
     record User(String id) implements IUser {
 
         @Override

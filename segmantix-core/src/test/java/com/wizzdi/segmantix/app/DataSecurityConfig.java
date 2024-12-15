@@ -4,7 +4,7 @@ import com.wizzdi.segmantix.api.service.Cache;
 import com.wizzdi.segmantix.api.service.FieldPathProvider;
 import com.wizzdi.segmantix.api.service.OperationGroupLinkProvider;
 import com.wizzdi.segmantix.api.service.InstanceGroupLinkProvider;
-import com.wizzdi.segmantix.api.service.SecurityProvider;
+import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import com.wizzdi.segmantix.service.SecurityRepository;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
@@ -48,7 +48,7 @@ public class DataSecurityConfig {
     @Bean
     public SecurityRepository baseclassRepository(FieldPathProvider fieldPathProvider,
                                                   OperationGroupLinkProvider operationGroupLinkProvider,
-                                                  SecurityProvider securityProvider,
+                                                  SecurityLinkProvider securityProvider,
                                                   InstanceGroupLinkProvider instanceGroupLinkProvider,
                                                   Cache cache, OperationService operationService){
         return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider, instanceGroupLinkProvider,cache,cache,operationService.getAllOps());

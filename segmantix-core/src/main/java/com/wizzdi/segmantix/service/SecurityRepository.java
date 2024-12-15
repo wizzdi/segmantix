@@ -1,5 +1,6 @@
 package com.wizzdi.segmantix.service;
 
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import com.wizzdi.segmantix.api.service.Cache;
 import com.wizzdi.segmantix.api.service.FieldPathProvider;
 import com.wizzdi.segmantix.api.model.IInstanceGroup;
@@ -12,8 +13,7 @@ import com.wizzdi.segmantix.api.model.IUser;
 import com.wizzdi.segmantix.api.model.IUserSecurity;
 import com.wizzdi.segmantix.api.service.OperationGroupLinkProvider;
 import com.wizzdi.segmantix.api.service.InstanceGroupLinkProvider;
-import com.wizzdi.segmantix.model.SecurityContext;
-import com.wizzdi.segmantix.api.service.SecurityProvider;
+import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import com.wizzdi.segmantix.api.model.IRole;
 import com.wizzdi.segmantix.api.model.IOperation;
 import com.wizzdi.segmantix.internal.SecuredHolder;
@@ -41,13 +41,13 @@ public class SecurityRepository {
 
 	private final IOperation allOp;
 	private final OperationGroupLinkProvider operationGroupLinkProvider;
-	private final SecurityProvider securityProvider;
+	private final SecurityLinkProvider securityProvider;
 	private final InstanceGroupLinkProvider instanceGroupLinkProvider;
 	private final FieldPathProvider fieldPathProvider;
 	private final Cache dataAccessControlCache;
 	private final Cache operationToOperationGroupCache;
 
-	public SecurityRepository(FieldPathProvider fieldPathProvider, OperationGroupLinkProvider operationGroupLinkProvider, SecurityProvider securityProvider, InstanceGroupLinkProvider instanceGroupLinkProvider,
+	public SecurityRepository(FieldPathProvider fieldPathProvider, OperationGroupLinkProvider operationGroupLinkProvider, SecurityLinkProvider securityProvider, InstanceGroupLinkProvider instanceGroupLinkProvider,
 							  Cache dataAccessControlCache, Cache operationToOperationGroupCache, IOperation allOp) {
 		this.allOp = allOp;
 		this.fieldPathProvider=fieldPathProvider;
@@ -64,10 +64,10 @@ public class SecurityRepository {
 	}
 
 
-	public SecurityPermissions getSecurityPermissions(SecurityContext securityContext) {
+	public SecurityPermissions getSecurityPermissions(ISecurityContext securityContext) {
 		IUser user=securityContext.user();
-		List<IRole> roles = securityContext.roles();
-		List<ITenant> tenants=securityContext.tenants();
+		List<? extends IRole> roles = securityContext.roles();
+		List<? extends ITenant> tenants=securityContext.tenants();
 		IOperation operation=securityContext.operation();
 		SecurityHolder securityHolder = getSecurityHolder(securityContext);
 		List<IUserSecurity> userLinks = securityHolder.users();
@@ -93,10 +93,10 @@ public class SecurityRepository {
 		return operationToOperationGroupCache.get(op.getId(), () -> operationGroupLinkProvider.listAllOperationGroupLinks(Collections.singletonList(op)).stream().map(f->f.getOperationGroup().getId()).collect(Collectors.toSet()));
 	}
 
-	private SecurityHolder getSecurityHolder(SecurityContext securityContext) {
+	private SecurityHolder getSecurityHolder(ISecurityContext securityContext) {
 		IUser user=securityContext.user();
-		List<IRole> roles=securityContext.roles();
-		List<ITenant> tenants=securityContext.tenants();
+		List<? extends IRole> roles=securityContext.roles();
+		List<? extends ITenant> tenants=securityContext.tenants();
 		List<IUserSecurity> userPermissions = dataAccessControlCache.get(user.getId(), List.class);
 		List<List<IRoleSecurity>> rolePermissions = roles.stream().map(f -> (List<IRoleSecurity>) dataAccessControlCache.get(f.getId(), List.class)).toList();
 		List<List<ITenantSecurity>> tenantPermissions = tenants.stream().map(f -> (List<ITenantSecurity>) dataAccessControlCache.get(f.getId(), List.class)).toList();
@@ -110,7 +110,7 @@ public class SecurityRepository {
 			return new SecurityHolder(userPermissions, roleLinks, tenantLinks, instanceGroupLinkes);
 
 		}
-		List<ISecurity> securitys = this.securityProvider.getSecuritys(securityContext);
+		List<ISecurity> securitys = this.securityProvider.getSecurityLinks(securityContext);
 		List<IInstanceGroup> instanceGroups=securitys.stream().map(f->f.getInstanceGroup()).filter(f->f!=null).toList();
 		Map<String,List<IInstanceGroupLink>> instanceGroupLinkes=instanceGroups.isEmpty()?Collections.emptyMap():this.instanceGroupLinkProvider.getInstanceGroupLinks(instanceGroups).stream().collect(Collectors.groupingBy(f->f.getInstanceGroup().getId()));
 		List<IUserSecurity> userLinks = securitys.stream().filter(f -> f instanceof IUserSecurity).map(f -> (IUserSecurity) f).toList();
@@ -141,7 +141,7 @@ public class SecurityRepository {
 	}
 
 
-	public <T > void addBaseclassPredicates(CriteriaBuilder cb, CommonAbstractCriteria q, From<?, T> r, List<Predicate> predicates, SecurityContext securityContext) {
+	public <T > void addBaseclassPredicates(CriteriaBuilder cb, CommonAbstractCriteria q, From<?, T> r, List<Predicate> predicates, ISecurityContext securityContext) {
 		if (!requiresSecurityPredicates(securityContext)) {
 			return;
 		}
@@ -260,17 +260,17 @@ public class SecurityRepository {
 		return !role.allowedTypes().isEmpty() && (!role.allowAll() || !userDenied.isEmpty() );
 	}
 
-	public boolean requiresSecurityPredicates(SecurityContext securityContext) {
+	public boolean requiresSecurityPredicates(ISecurityContext securityContext) {
 		IUser user= securityContext.user();
 		if (user == null) {
 			return false;
 		}
-		List<IRole> roles=securityContext.roles();
+		List<? extends IRole> roles=securityContext.roles();
 		return !isSuperAdmin(roles);
 	}
 
 
-	private boolean isSuperAdmin(List<IRole> roles) {
+	private boolean isSuperAdmin(List<? extends IRole> roles) {
 		return roles.stream().anyMatch(f->f.isSuperAdmin());
 	}
 

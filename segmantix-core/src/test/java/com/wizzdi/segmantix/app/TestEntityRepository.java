@@ -1,7 +1,7 @@
 package com.wizzdi.segmantix.app;
 
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import com.wizzdi.segmantix.service.SecurityRepository;
-import com.wizzdi.segmantix.model.SecurityContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -27,7 +27,7 @@ public class TestEntityRepository {
 
 
     public List<TestEntity> listAllTestEntities(
-            TestEntityFilter filtering, SecurityContext securityContext) {
+            TestEntityFilter filtering, ISecurityContext securityContext) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<TestEntity> q = cb.createQuery(TestEntity.class);
         Root<TestEntity> r = q.from(TestEntity.class);

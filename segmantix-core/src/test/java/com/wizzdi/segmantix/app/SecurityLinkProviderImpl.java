@@ -2,10 +2,10 @@ package com.wizzdi.segmantix.app;
 
 import com.wizzdi.segmantix.api.model.IRoleSecurity;
 import com.wizzdi.segmantix.api.model.ISecurity;
+import com.wizzdi.segmantix.api.model.ISecurityContext;
 import com.wizzdi.segmantix.api.model.ITenantSecurity;
 import com.wizzdi.segmantix.api.model.IUserSecurity;
-import com.wizzdi.segmantix.api.service.SecurityProvider;
-import com.wizzdi.segmantix.model.SecurityContext;
+import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,17 +15,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class SecurityProviderImpl implements SecurityProvider {
+public class SecurityLinkProviderImpl implements SecurityLinkProvider {
 
     @Autowired
     private CacheImpl cache;
     private final List<ISecurity> links=new ArrayList<>();
     @Override
-    public List<ISecurity> getSecuritys(SecurityContext securityContext) {
+    public List<ISecurity> getSecurityLinks(ISecurityContext securityContext) {
         return links.stream().filter(f-> relevantLink(f,securityContext)).toList();
     }
 
-    private boolean relevantLink(ISecurity security, SecurityContext securityContext) {
+    private boolean relevantLink(ISecurity security, ISecurityContext securityContext) {
         Set<String> roleIds=securityContext.roles().stream().map(f->f.getId()).collect(Collectors.toSet());
         Set<String> tenantIds=securityContext.tenants().stream().map(f->f.getId()).collect(Collectors.toSet());
         return switch (security){
