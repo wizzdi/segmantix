@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+          server-id: ossrh  # the id from your distributionManagement in pom.xml
+          server-username: MVN_USERNAME
+          server-password: MVN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} 
+          gpg-passphrase: GPG_PASSPHRASE
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Extract latest git tag, increment it and write to revision.txt
+        run: mvn ci-friendly-flatten:version
+      
+      - name: Read the version
+        id: get_version
+        run:  echo "VERSION=$(cat revision.txt)" >> $GITHUB_ENV
+
+      - name: Build and Deploy
+        run: mvn clean deploy -DskipTests -DperformRelease=true -Drevision=${{ env.VERSION }}
+        env:
+          MVN_USERNAME: ${{ secrets.MVN_USERNAME }} 
+          MVN_PASSWORD: ${{ secrets.MVN_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Tag the current commit
+        run: |
+          git config --global user.name '${{ secrets.GIT_USER_NAME }}'
+          git config --global user.email '${{ secrets.GIT_USER_EMAIL }}'
+          git tag -a release-${{ env.VERSION }} -m "Release release-${{ env.VERSION }}"
+          git push origin release-${{ env.VERSION }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
