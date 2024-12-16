@@ -3,7 +3,7 @@ package com.wizzdi.segmantix.api.model;
 
 import com.wizzdi.segmantix.model.Access;
 
-public interface ISecurity {
+public interface ISecurityLink {
 
    String getId();
    String getSecuredId();

@@ -2,17 +2,18 @@ package com.wizzdi.segmantix;
 
 
 import com.wizzdi.segmantix.api.model.ISecurityContext;
+import com.wizzdi.segmantix.app.DataSecurityConfig;
 import com.wizzdi.segmantix.model.Access;
 import com.wizzdi.segmantix.api.model.IInstanceGroup;
 import com.wizzdi.segmantix.api.model.IInstanceGroupLink;
 import com.wizzdi.segmantix.api.model.IOperation;
 import com.wizzdi.segmantix.api.model.IOperationGroup;
 import com.wizzdi.segmantix.api.model.IRole;
-import com.wizzdi.segmantix.api.model.IRoleSecurity;
+import com.wizzdi.segmantix.api.model.IRoleSecurityLink;
 import com.wizzdi.segmantix.api.model.ITenant;
 import com.wizzdi.segmantix.api.model.IUser;
-import com.wizzdi.segmantix.api.model.ITenantSecurity;
-import com.wizzdi.segmantix.api.model.IUserSecurity;
+import com.wizzdi.segmantix.api.model.ITenantSecurityLink;
+import com.wizzdi.segmantix.api.model.IUserSecurityLink;
 import com.wizzdi.segmantix.app.App;
 import com.wizzdi.segmantix.app.OperationService;
 import com.wizzdi.segmantix.app.InstanceGroupLinkProviderImpl;
@@ -46,7 +47,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.wizzdi.segmantix.internal.SecurityPermissionEntry.SECURITY_WILDCARD_PLACEHOLDER;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = App.class)
@@ -125,9 +125,9 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         }
     }
 
-    record UserSecurity(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
-                        Access access, IOperation operation, IOperationGroup operationGroup,
-                        IUser user) implements IUserSecurity {
+    record UserSecurityLink(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
+                            Access access, IOperation operation, IOperationGroup operationGroup,
+                            IUser user) implements IUserSecurityLink {
         @Override
         public IUser getUser() {
             return user;
@@ -169,9 +169,9 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         }
     }
 
-    record RoleSecurity(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
-                        Access access, IOperation operation, IOperationGroup operationGroup,
-                        IRole role) implements IRoleSecurity {
+    record RoleSecurityLink(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
+                            Access access, IOperation operation, IOperationGroup operationGroup,
+                            IRole role) implements IRoleSecurityLink {
         @Override
         public IRole getRole() {
             return role;
@@ -213,9 +213,9 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         }
     }
 
-    record TenantSecurity(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
-                          Access access, IOperation operation, IOperationGroup operationGroup,
-                          ITenant tenant) implements ITenantSecurity {
+    record TenantSecurityLink(String id, String securedId, String securedType, IInstanceGroup instanceGroup,
+                              Access access, IOperation operation, IOperationGroup operationGroup,
+                              ITenant tenant) implements ITenantSecurityLink {
         @Override
         public ITenant getTenant() {
             return tenant;
@@ -326,7 +326,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
     public void testForUser() {
         TestEntity forUser = testEntityService.createTestEntityNoMerge(new TestEntityCreate().setName("forUser"), test2SecurityContext);
         testEntityService.merge(forUser);
-        UserSecurity security = new UserSecurity(UUID.randomUUID().toString(), forUser.getId(), TestEntity.class.getCanonicalName(), null, Access.allow, operationService.getAllOps(), null, test1SecurityContext.user());
+        UserSecurityLink security = new UserSecurityLink(UUID.randomUUID().toString(), forUser.getId(), TestEntity.class.getCanonicalName(), null, Access.allow, operationService.getAllOps(), null, test1SecurityContext.user());
         securityService.add(security);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forUser.getId())));
@@ -341,7 +341,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         TestEntity forRole = testEntityService.createTestEntity(new TestEntityCreate().setName("forRole"), test2SecurityContext);
         testEntityService.merge(forRole);
 
-        RoleSecurity roleSecurity = new RoleSecurity(UUID.randomUUID().toString(),forRole.getId(),TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,test1SecurityContext.roles().getFirst());
+        RoleSecurityLink roleSecurity = new RoleSecurityLink(UUID.randomUUID().toString(),forRole.getId(),TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,test1SecurityContext.roles().getFirst());
         securityService.add(roleSecurity);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forRole.getId())));
@@ -355,7 +355,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
     public void testForTenant() {
         TestEntity forTenant = testEntityService.createTestEntity(new TestEntityCreate().setName("forTenant"), test2SecurityContext);
 
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),forTenant.getId(),forTenant.getClass().getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,test1SecurityContext.tenants().getLast());
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),forTenant.getId(),forTenant.getClass().getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,test1SecurityContext.tenants().getLast());
         securityService.add(tenantSecurity);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forTenant.getId())));
@@ -374,7 +374,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
 
         InstanceGroupLink instanceGroupLink = new InstanceGroupLink(forUserGroup,forUser.getId(),forUser.getClass().getCanonicalName());
         instanceGroupLinkServiceImpl.add(instanceGroupLink);
-        UserSecurity userSecurity = new UserSecurity(UUID.randomUUID().toString(), null, null, forUserGroup, Access.allow, operationService.getAllOps(), null, test1SecurityContext.user());
+        UserSecurityLink userSecurity = new UserSecurityLink(UUID.randomUUID().toString(), null, null, forUserGroup, Access.allow, operationService.getAllOps(), null, test1SecurityContext.user());
         securityService.add(userSecurity);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forUser.getId())));
@@ -390,7 +390,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         TestEntity forRole = testEntityService.createTestEntity(new TestEntityCreate().setName("forRole"), test2SecurityContext);
         InstanceGroupLink instanceGroupLink = new InstanceGroupLink(forRoleGroup,forRole.getId(),forRole.getClass().getCanonicalName());
         instanceGroupLinkServiceImpl.add(instanceGroupLink);
-        RoleSecurity roleSecurity=new RoleSecurity(UUID.randomUUID().toString(),null,null,forRoleGroup,Access.allow, operationService.getAllOps(), null,test1SecurityContext.roles().getFirst());
+        RoleSecurityLink roleSecurity=new RoleSecurityLink(UUID.randomUUID().toString(),null,null,forRoleGroup,Access.allow, operationService.getAllOps(), null,test1SecurityContext.roles().getFirst());
         securityService.add(roleSecurity);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forRole.getId())));
@@ -405,7 +405,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         TestEntity forTenant = testEntityService.createTestEntity(new TestEntityCreate().setName("forTenant"), test2SecurityContext);
         InstanceGroupLink instanceGroupLink = new InstanceGroupLink(forTenantGroup,forTenant.getId(),forTenant.getClass().getCanonicalName());
         instanceGroupLinkServiceImpl.add(instanceGroupLink);
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),null,null,forTenantGroup,Access.allow, operationService.getAllOps(), null,test1SecurityContext.tenants().getLast());
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),null,null,forTenantGroup,Access.allow, operationService.getAllOps(), null,test1SecurityContext.tenants().getLast());
         securityService.add(tenantSecurity);
         List<TestEntity> testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), test1SecurityContext);
         Assertions.assertTrue(testEntities.stream().anyMatch(f->f.getId().equals(forTenant.getId())));
@@ -429,7 +429,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant it access for clazz
-        UserSecurity userSecurity=new UserSecurity(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,freshUser);
+        UserSecurityLink userSecurity=new UserSecurityLink(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,freshUser);
         securityService.add(userSecurity);
 
         // validate it has access to all TestEntities in the tenant
@@ -458,7 +458,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant the role access for clazz
-        RoleSecurity roleSecurity=new RoleSecurity(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,freshRole);
+        RoleSecurityLink roleSecurity=new RoleSecurityLink(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,freshRole);
         securityService.add(roleSecurity);
 
         // validate the user with role has access to all TestEntities in the tenant
@@ -487,7 +487,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant the tenant access for clazz
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,securityContext.tenants().get(1));
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),null,TestEntity.class.getCanonicalName(),null,Access.allow, operationService.getAllOps(), null,securityContext.tenants().get(1));
         securityService.add(tenantSecurity);
 
         // validate the user in the tenant has access to all TestEntities in the tenant
@@ -512,7 +512,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant it access for clazz
-        UserSecurity userSecurity= new UserSecurity(UUID.randomUUID().toString(),null,SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,freshUser);
+        UserSecurityLink userSecurity= new UserSecurityLink(UUID.randomUUID().toString(),null, DataSecurityConfig.SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,freshUser);
         securityService.add(userSecurity);
 
         // validate it has access to all TestEntities in the tenant
@@ -541,7 +541,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant the role access for clazz
-        RoleSecurity roleSecurity=new RoleSecurity(UUID.randomUUID().toString(),null,SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,freshRole);
+        RoleSecurityLink roleSecurity=new RoleSecurityLink(UUID.randomUUID().toString(),null, DataSecurityConfig.SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,freshRole);
         securityService.add(roleSecurity);
 
         // validate the user with role has access to all TestEntities in the tenant
@@ -569,7 +569,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
         Assertions.assertTrue(testEntities.isEmpty());
 
         // grant the tenant access for clazz
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),null,SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),null, DataSecurityConfig.SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
         securityService.add(tenantSecurity);
         //validate role does not have access to Test Entities in other tenant which he belongs to
         Assertions.assertTrue(testEntities.stream().noneMatch(f->othersInOtherTenantIds.contains(f.getId())));
@@ -584,7 +584,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
 
         securityService.clear();
         instanceGroupLinkServiceImpl.clear();
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),null,SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),null, DataSecurityConfig.SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
         securityService.add(tenantSecurity);
         User freshUser = new User("freshUser7");
         Tenant freshTenant = new Tenant("freshTenant7");
@@ -596,7 +596,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
 
         // grant it access for clazz
         String toDeny = othersInTenantIds.stream().findFirst().orElseThrow(() -> new RuntimeException("no test entity found"));
-        UserSecurity userSecurity=new UserSecurity(UUID.randomUUID().toString(),toDeny,TestEntity.class.getCanonicalName(),null,Access.deny, operationService.getAllOps(), null,freshUser);
+        UserSecurityLink userSecurity=new UserSecurityLink(UUID.randomUUID().toString(),toDeny,TestEntity.class.getCanonicalName(),null,Access.deny, operationService.getAllOps(), null,freshUser);
         securityService.add(userSecurity);
         testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), securityContext);
         Assertions.assertTrue(testEntities.stream().noneMatch(f->f.getId().equals(toDeny)));
@@ -610,7 +610,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
 
         securityService.clear();
         instanceGroupLinkServiceImpl.clear();
-        TenantSecurity tenantSecurity=new TenantSecurity(UUID.randomUUID().toString(),null,SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
+        TenantSecurityLink tenantSecurity=new TenantSecurityLink(UUID.randomUUID().toString(),null, DataSecurityConfig.SECURITY_WILDCARD_PLACEHOLDER,null,Access.allow, operationService.getAllOps(), null,test2SecurityContext.tenants().getFirst());
         securityService.add(tenantSecurity);
         Tenant freshTenant = new Tenant("freshTenant8");
         Role freshRole = new Role("freshRole8",freshTenant);
@@ -624,7 +624,7 @@ record SecurityContext(User user,List<Tenant> tenants,Tenant tenantToCreateIn,Li
 
         // grant it access for clazz
         String toDeny =  othersInTenantIds.stream().findFirst().orElseThrow(() -> new RuntimeException("no test entity found"));
-        RoleSecurity roleSecurity=new RoleSecurity(UUID.randomUUID().toString(),toDeny,TestEntity.class.getCanonicalName(),null,Access.deny, operationService.getAllOps(), null,freshRole);
+        RoleSecurityLink roleSecurity=new RoleSecurityLink(UUID.randomUUID().toString(),toDeny,TestEntity.class.getCanonicalName(),null,Access.deny, operationService.getAllOps(), null,freshRole);
         securityService.add(roleSecurity);
         testEntities = testEntityService.listAllTestEntities(new TestEntityFilter(), securityContext);
         Assertions.assertTrue(testEntities.stream().noneMatch(f->f.getId().equals(toDeny)));

@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DataSecurityConfig {
+    public static final String SECURITY_WILDCARD_PLACEHOLDER="***WILDCARD_TYPE***";
+
     @Bean
     public FieldPathProvider fieldPathProvider(){
         return new FieldPathProvider() {
@@ -46,11 +48,11 @@ public class DataSecurityConfig {
         }
     }
     @Bean
-    public SecurityRepository baseclassRepository(FieldPathProvider fieldPathProvider,
-                                                  OperationGroupLinkProvider operationGroupLinkProvider,
-                                                  SecurityLinkProvider securityProvider,
-                                                  InstanceGroupLinkProvider instanceGroupLinkProvider,
-                                                  Cache cache, OperationService operationService){
-        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider, instanceGroupLinkProvider,cache,cache,operationService.getAllOps());
+    public SecurityRepository securityRepository(FieldPathProvider fieldPathProvider,
+                                                 OperationGroupLinkProvider operationGroupLinkProvider,
+                                                 SecurityLinkProvider securityProvider,
+                                                 InstanceGroupLinkProvider instanceGroupLinkProvider,
+                                                 Cache cache, OperationService operationService){
+        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider, instanceGroupLinkProvider,cache,cache,operationService.getAllOps(),SECURITY_WILDCARD_PLACEHOLDER);
     }
 }

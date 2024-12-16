@@ -1,5 +1,5 @@
 package com.wizzdi.segmantix.api.model;
 
-public interface ITenantSecurity extends ISecurity {
+public interface ITenantSecurityLink extends ISecurityLink {
     ITenant getTenant();
 }
