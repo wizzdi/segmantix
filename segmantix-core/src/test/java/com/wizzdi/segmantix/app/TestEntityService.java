@@ -43,6 +43,10 @@ public class TestEntityService {
             testEntity.setName(testEntityCreate.getName());
             update=true;
         }
+        if(testEntityCreate.getPermissionGroupId()!=null&&!testEntityCreate.getPermissionGroupId().equals(testEntity.getPermissionGroupId())){
+            testEntity.setPermissionGroupId(testEntityCreate.getPermissionGroupId());
+            update=true;
+        }
         return update;
     }
 

@@ -11,6 +11,7 @@ public class TestEntity  {
     private String tenantId;
     private String name;
     private String description;
+    private String permissionGroupId;
 
     public String getId() {
         return id;
@@ -57,4 +58,12 @@ public class TestEntity  {
         return (T) this;
     }
 
+    public String getPermissionGroupId() {
+        return permissionGroupId;
+    }
+
+    public <T extends TestEntity> T setPermissionGroupId(String permissionGroupId) {
+        this.permissionGroupId = permissionGroupId;
+        return (T) this;
+    }
 }

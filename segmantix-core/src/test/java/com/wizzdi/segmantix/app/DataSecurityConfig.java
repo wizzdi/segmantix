@@ -3,9 +3,9 @@ package com.wizzdi.segmantix.app;
 import com.wizzdi.segmantix.api.service.Cache;
 import com.wizzdi.segmantix.api.service.FieldPathProvider;
 import com.wizzdi.segmantix.api.service.OperationGroupLinkProvider;
-import com.wizzdi.segmantix.api.service.InstanceGroupLinkProvider;
 import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import com.wizzdi.segmantix.service.SecurityRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +37,12 @@ public class DataSecurityConfig {
             public <T> Path<String> getSecurityId(From<?, T> r) {
                 return r.get("id");
             }
+
+            @Override
+            public <T> Path<String> getInstanceGroupPath(From<?, T> r, CriteriaBuilder cb) {
+                return r.get("permissionGroupId");
+            }
+
         };
     }
     private Path<String> getTypeFieldOrNull(From<?,?> r,String name){
@@ -51,8 +57,7 @@ public class DataSecurityConfig {
     public SecurityRepository securityRepository(FieldPathProvider fieldPathProvider,
                                                  OperationGroupLinkProvider operationGroupLinkProvider,
                                                  SecurityLinkProvider securityProvider,
-                                                 InstanceGroupLinkProvider instanceGroupLinkProvider,
                                                  Cache cache, OperationService operationService){
-        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider, instanceGroupLinkProvider,cache,cache,operationService.getAllOps(),SECURITY_WILDCARD_PLACEHOLDER);
+        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider,cache,cache,operationService.getAllOps(),SECURITY_WILDCARD_PLACEHOLDER);
     }
 }
