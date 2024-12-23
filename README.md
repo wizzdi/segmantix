@@ -79,7 +79,7 @@ public List<TestEntity> listAllTestEntities(
     CriteriaQuery<TestEntity> q = cb.createQuery(TestEntity.class);
     Root<TestEntity> r = q.from(TestEntity.class);
     List<Predicate> preds = new ArrayList<>();
-    securedBasicRepository.addSecurityPredicates(cb, q, r, preds, securityContext);
+    securityRepository.addSecurityPredicates(cb, q, r, preds, securityContext);
     q.select(r).where(preds.toArray(new Predicate[0]));
     TypedQuery<TestEntity> query = em.createQuery(q);
     return query.getResultList();
@@ -121,3 +121,8 @@ SegmantiX is licensed under the Apache License 2.0. See `LICENSE` for more infor
 
 For questions or support, reach out to the development team at [support@wizzdi.com](mailto\:support@wizzdi.com).
 
+## Projects Using SegmantiX
+Here are some projects leveraging SegmantiX for their multi-tenancy and access control needs:
+- [Wizzdi Cloud](https://wizzdi.com): a No-Code platform for creating backends
+  
+We aim to expand this list as more projects adopt SegmantiX.
