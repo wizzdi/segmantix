@@ -37,7 +37,7 @@ Add the following dependency to your Maven project:
 <dependency>
     <groupId>com.wizzdi</groupId>
     <artifactId>segmantix-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
