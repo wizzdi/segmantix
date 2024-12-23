@@ -1,6 +1,9 @@
 # SegmantiX
 
-SegmantiX is a powerful multi-tenancy and access control library for any Java applications. This library is a fork of our existing project, FlexiCore. The purpose of this fork is to separate the multi-tenancy features from other FlexiCore features. It is framework-agnostic and relies only on JPA and slf4j-api, making it flexible for various use cases. It provides fine-grained security controls, allowing developers to manage access permissions for users, roles, tenants, and instance groups at a granular level.
+SegmantiX is a powerful multi-tenancy and access control library for any Java applications.
+
+This library is a fork of our existing project, FlexiCore. The purpose of this fork is to separate the multi-tenancy features from other FlexiCore features. It is framework-agnostic and relies only on JPA and slf4j-api, making it flexible for various use cases. It provides fine-grained security controls, allowing developers to manage access permissions for users, roles, tenants, and instance groups at a granular level.
+
 
 ## Features
 
@@ -20,13 +23,13 @@ SegmantiX is a powerful multi-tenancy and access control library for any Java ap
 
 - **Manage Access to Data Sets**: Organize and control permissions for logical collections of data effectively.
 
-### Dependencies
+## Dependencies
 
 - Java 21+
 - JPA
 - slf4j-api
 
-### Installation
+## Installation
 
 Add the following dependency to your Maven project:
 
@@ -43,25 +46,23 @@ Add the following dependency to your Maven project:
 To use SegmantiX, you need to implement the following interfaces. These can be implemented in-memory or persisted, depending on your application's requirements:
 
 - `IInstanceGroup`: A group of instances to manage permissions for.
-- `IInstanceGroupLink`: A link between an instance and an instance group.
 - `IOperation`: An operation, such as read/write/delete/admin, or custom operations like `deleteAccount`.
 - `IOperationGroup`: A group of operations.
 - `IOperationGroupLink`: A link between an operation and a group.
 - `IRole`: A role.
-- `IRoleSecurity`: Security granted to a role.
-- `ISecurity`: Security that grants access to an instance, instance group, or type under specific or all operations.
+- `IRoleSecurityLink`: Security granted to a role.
+- `ISecurityLink`: Security Link grants access to an instance, instance group, or type under specific or all operations.
 - `ISecurityContext`: Holds the user, their roles/tenants, and the current operation.
-- `ISecurityGroup`: A group of securities that logically belong together.
+- `ISecurityGroup`: A group of security links that logically belong together.
 - `ITenant`: A tenant.
-- `ITenantSecurity`: Security for a tenant.
+- `ITenantSecurityLink`: Security Link for a tenant.
 - `IUser`: A user.
-- `IUserSecurity`: Security for a user.
+- `IUserSecurityLink`: Security Link for a user.
 
 Additionally, you need to implement the following components:
 
 - `Cache`: Caches the results of `SecurityLinkProvider` to avoid fetching repeatedly.
 - `FieldPathProvider`: Extracts the required paths for executing a secured query from a JPA root.
-- `InstanceGroupLinkProvider`: Provides links for given instance groups.
 - `OperationGroupLinkProvider`: Provides operations for given operation groups.
 - `SecurityLinkProvider`: Provides a list of relevant links based on a security context.
 
@@ -87,7 +88,7 @@ public List<TestEntity> listAllTestEntities(
 
 ## Testing
 
-SegmantiX is rigorously tested using JUnit. The provided unit tests cover various scenarios:
+ The provided unit tests cover various scenarios:
 
 - User access to resources in their own tenant.
 - Role-based access control to specific entities.
@@ -106,7 +107,7 @@ mvn test
 
 - Add concrete implementations for required interfaces (`jpa-store` and `in-memory-store`).
 - Introduce a permission management UI for enhanced usability.
-- Migrate existing features from FlexiCore to SegmantiX to ensure compatibility and minimize development effort.
+- Migrate features from FlexiCore to SegmantiX to create the 'jpa-store' implementation
 
 ## Contribution
 
