@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+        http://xmlns.jcp.org/xml/ns/persistence
+        http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+    <persistence-unit name="primary" transaction-type="JTA">
+
+
+        <class>com.wizzdi.segmantix.store.jpa.model.Baseclass</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.Basic</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.Baseclass</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityEntity</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityUser</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.Role</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.RoleToUser</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.PermissionGroup</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.Clazz</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.OperationCategory</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.OperationToClazz</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.PermissionGroupToBaseclass</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.RoleToBaseclass</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityLink</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityOperation</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityTenant</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityWildcard</class>
+		<class>com.wizzdi.segmantix.store.jpa.model.TenantToBaseclass</class>
+		<class>com.wizzdi.segmantix.store.jpa.model.TenantToUser</class>
+		<class>com.wizzdi.segmantix.store.jpa.model.UserToBaseclass</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.OperationGroup</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.OperationToGroup</class>
+        <class>com.wizzdi.segmantix.store.jpa.model.SecurityLinkGroup</class>
+
+
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+    </persistence-unit>
+
+</persistence>

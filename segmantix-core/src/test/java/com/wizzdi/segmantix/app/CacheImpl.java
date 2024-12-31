@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+
 public class CacheImpl implements Cache {
     private final ConcurrentHashMap<Object,Object> map=new ConcurrentHashMap<>();
     @Override

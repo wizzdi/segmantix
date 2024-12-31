@@ -23,6 +23,9 @@
       
         <module>segmantix-core</module>
         <module>segmantix-dependencies</module>
+        <module>segmantix-in-memory-store</module>
+        <module>segmantix-jpa-store</module>
+        <module>segmantix-jpa-spring</module>
 
 
     </modules>
@@ -35,7 +38,7 @@
 
 
 
-        <segmantix-jpa-store-spring.version>${project.version}</segmantix-jpa-store-spring.version>
+        <segmantix-jpa-spring.version>${project.version}</segmantix-jpa-spring.version>
         <segmantix-jpa-store.version>${project.version}</segmantix-jpa-store.version>
         <segmantix-core.version>${project.version}</segmantix-core.version>
 
@@ -105,6 +108,17 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.wizzdi</groupId>
+                <artifactId>segmantix-jpa-spring</artifactId>
+                <version>${segmantix-jpa-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wizzdi</groupId>
+                <artifactId>segmantix-jpa-store</artifactId>
+                <version>${segmantix-jpa-store.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.wizzdi</groupId>
                 <artifactId>segmantix-core</artifactId>
