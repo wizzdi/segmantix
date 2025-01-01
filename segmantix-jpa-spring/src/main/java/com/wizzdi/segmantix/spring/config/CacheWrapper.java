@@ -4,7 +4,7 @@ import org.springframework.cache.Cache;
 
 import java.util.concurrent.Callable;
 
-record CacheWrapper(Cache cache) implements com.wizzdi.segmantix.api.service.Cache {
+public record CacheWrapper(Cache cache) implements com.wizzdi.segmantix.api.service.Cache {
 
     @Override
     public <T> T get(Object key, Class<T> type) {
@@ -19,5 +19,10 @@ record CacheWrapper(Cache cache) implements com.wizzdi.segmantix.api.service.Cac
     @Override
     public <T> T get(Object key, Callable<T> valueLoader) {
         return cache.get(key, valueLoader);
+    }
+
+    @Override
+    public void remove(Object key) {
+        cache.evict(key);
     }
 }

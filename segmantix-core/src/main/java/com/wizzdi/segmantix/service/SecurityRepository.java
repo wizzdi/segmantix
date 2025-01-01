@@ -14,6 +14,7 @@ import com.wizzdi.segmantix.api.service.OperationGroupLinkProvider;
 import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
 import com.wizzdi.segmantix.api.model.IRole;
 import com.wizzdi.segmantix.api.model.IOperation;
+import com.wizzdi.segmantix.api.service.SegmantixCache;
 import com.wizzdi.segmantix.internal.SecuredHolder;
 import com.wizzdi.segmantix.internal.SecurityPermissionEntry;
 import com.wizzdi.segmantix.internal.SecurityPermissions;
@@ -48,14 +49,14 @@ public class SecurityRepository {
 	private final Cache operationToOperationGroupCache;
 
 	public SecurityRepository(FieldPathProvider fieldPathProvider, OperationGroupLinkProvider operationGroupLinkProvider, SecurityLinkProvider securityProvider,
-							  Cache dataAccessControlCache, Cache operationToOperationGroupCache, IOperation allOp,String allTypesId) {
+							  SegmantixCache segmantixCache, IOperation allOp, String allTypesId) {
 		this.allOp = allOp;
 		this.allTypesId=allTypesId;
 		this.fieldPathProvider=fieldPathProvider;
 		this.operationGroupLinkProvider = operationGroupLinkProvider;
 		this.securityProvider = securityProvider;
-		this.dataAccessControlCache = dataAccessControlCache;
-		this.operationToOperationGroupCache = operationToOperationGroupCache;
+		this.dataAccessControlCache = segmantixCache.dataAccessControlCache();
+		this.operationToOperationGroupCache = segmantixCache.operationToOperationGroupCache();
 	}
 
 	record SecurityHolder(List<IUserSecurityLink> users, List<IRoleSecurityLink> roles,

@@ -18,8 +18,11 @@ import java.util.UUID;
 public class SecurityOperationService implements SegmantixService {
 
 
-    private SecurityOperationRepository operationRepository;
+    private final SecurityOperationRepository operationRepository;
 
+    public SecurityOperationService(SecurityOperationRepository operationRepository) {
+        this.operationRepository = operationRepository;
+    }
 
     public SecurityOperation addOperation(SecurityOperationCreate securityOperationCreate) {
         SecurityOperation securityOperation = getSecurityOperation(securityOperationCreate);

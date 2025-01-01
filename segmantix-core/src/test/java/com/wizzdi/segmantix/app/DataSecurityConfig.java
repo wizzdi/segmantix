@@ -4,6 +4,7 @@ import com.wizzdi.segmantix.api.service.Cache;
 import com.wizzdi.segmantix.api.service.FieldPathProvider;
 import com.wizzdi.segmantix.api.service.OperationGroupLinkProvider;
 import com.wizzdi.segmantix.api.service.SecurityLinkProvider;
+import com.wizzdi.segmantix.api.service.SegmantixCache;
 import com.wizzdi.segmantix.service.SecurityRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.From;
@@ -58,6 +59,8 @@ public class DataSecurityConfig {
                                                  OperationGroupLinkProvider operationGroupLinkProvider,
                                                  SecurityLinkProvider securityProvider,
                                                  Cache cache, OperationService operationService){
-        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider,cache,cache,operationService.getAllOps(),SECURITY_WILDCARD_PLACEHOLDER);
+        return new SecurityRepository(fieldPathProvider, operationGroupLinkProvider, securityProvider,new SegmantixCache(cache,cache),operationService.getAllOps(),SECURITY_WILDCARD_PLACEHOLDER);
     }
+
+
 }

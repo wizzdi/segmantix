@@ -1,5 +1,6 @@
 package com.wizzdi.segmantix.spring.config;
 
+import com.wizzdi.segmantix.api.service.SegmantixCache;
 import com.wizzdi.segmantix.model.Access;
 import com.wizzdi.segmantix.service.SecurityRepository;
 import com.wizzdi.segmantix.store.jpa.data.Operations;
@@ -34,9 +35,14 @@ import java.util.List;
 public class SegmantixSpringConfig {
 
     @Bean
-    public SecurityRepository securityRepository(EntityManager em, Cache dataAccessControlCache, Cache operationToOperationGroupCache, SecurityOperationService securityOperationService){
-        return SegmantixJPAStore.create(em,new CacheWrapper(dataAccessControlCache),new CacheWrapper(operationToOperationGroupCache),securityOperationService.getAllOperations());
+    public SecurityRepository securityRepository(EntityManager em, SegmantixCache segmantixCache, SecurityOperationService securityOperationService){
+        return SegmantixJPAStore.create(em,segmantixCache,securityOperationService.getAllOperations());
     }
+    @Bean
+    public SegmantixCache segmantixCacheProvider(Cache dataAccessControlCache, Cache operationToOperationGroupCache){
+        return new SegmantixCache(new CacheWrapper(dataAccessControlCache),new CacheWrapper(operationToOperationGroupCache));
+    }
+
     @Bean
     @ConditionalOnMissingBean
     public Operations operations(){

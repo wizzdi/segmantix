@@ -8,5 +8,6 @@ public interface Cache {
     void put(Object key, Object value);
 
     <T> T get(Object key, Callable<T> valueLoader);
+     void remove(Object key);
 
 }

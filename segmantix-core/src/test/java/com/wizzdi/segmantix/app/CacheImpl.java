@@ -30,6 +30,12 @@ public class CacheImpl implements Cache {
             }
         });
     }
+
+    @Override
+    public void remove(Object key) {
+        map.remove(key);
+    }
+
     public void invalidateAll(){
         map.clear();
     }

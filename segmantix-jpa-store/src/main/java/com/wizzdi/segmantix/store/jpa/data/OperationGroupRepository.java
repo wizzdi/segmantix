@@ -97,6 +97,7 @@ public class OperationGroupRepository implements SegmantixRepository {
 	}
 
 
+
 	public <T> T merge(T base) {
 		return securedBasicRepository.merge(base);
 	}

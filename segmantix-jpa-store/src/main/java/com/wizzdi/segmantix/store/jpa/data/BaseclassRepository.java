@@ -22,6 +22,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -230,6 +231,7 @@ public class BaseclassRepository implements SegmantixRepository {
 	}
 
 
+	@Transactional
 	public void createIndexes(boolean recreateIndexes) {
 		Set<String> tablesForIndexCreation = em.getMetamodel().getEntities().stream().filter(f -> Baseclass.class.isAssignableFrom(f.getJavaType())).map(f -> getTableName(f)).filter(f -> f != null).collect(Collectors.toSet());
 		for (String table : tablesForIndexCreation) {

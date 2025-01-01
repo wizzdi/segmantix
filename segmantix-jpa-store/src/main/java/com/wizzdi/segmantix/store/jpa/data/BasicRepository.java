@@ -1,6 +1,7 @@
 package com.wizzdi.segmantix.store.jpa.data;
 
 
+import com.wizzdi.segmantix.store.jpa.interfaces.MergeListener;
 import com.wizzdi.segmantix.store.jpa.interfaces.SegmantixRepository;
 import com.wizzdi.segmantix.store.jpa.model.Baseclass_;
 import com.wizzdi.segmantix.store.jpa.model.Basic;
@@ -40,10 +41,12 @@ public class BasicRepository  implements SegmantixRepository {
     
     private final EntityManager em;
     private final MergingRepository mergingRepository;
+    private final List<MergeListener> mergeListeners;
 
-    public BasicRepository(EntityManager em, MergingRepository mergingRepository) {
+    public BasicRepository(EntityManager em, MergingRepository mergingRepository, List<MergeListener> mergeListeners) {
         this.em = em;
         this.mergingRepository = mergingRepository;
+        this.mergeListeners=mergeListeners;
     }
 
 
@@ -152,6 +155,14 @@ public class BasicRepository  implements SegmantixRepository {
 
     public <T> T merge(T base, boolean updateDate) {
         MergingRepository.MergeResult<T> merge = mergingRepository.merge(base, updateDate);
+        for (MergeListener mergeListener : mergeListeners) {
+            if(merge.mergeType()== MergingRepository.MergeType.CREATE){
+                mergeListener.onCreate(merge.merged());
+            }
+            else{
+                mergeListener.onUpdate(merge.merged());
+            }
+        }
 
         return merge.merged();
 
@@ -163,6 +174,16 @@ public class BasicRepository  implements SegmantixRepository {
 
      public void massMerge(List<?> toMerge, boolean updatedate) {
         MergingRepository.MassMergeResult massMergeResult = mergingRepository.massMerge(toMerge, updatedate);
+         for (Object o : massMergeResult.created()) {
+             for (MergeListener mergeListener : mergeListeners) {
+                 mergeListener.onCreate(o);
+             }
+         }
+         for (Object o : massMergeResult.updated()) {
+             for (MergeListener mergeListener : mergeListeners) {
+                 mergeListener.onUpdate(o);
+             }
+         }
 
     }
 
