@@ -23,7 +23,6 @@
       
         <module>segmantix-core</module>
         <module>segmantix-dependencies</module>
-        <module>segmantix-in-memory-store</module>
         <module>segmantix-jpa-store</module>
         <module>segmantix-jpa-spring</module>
 

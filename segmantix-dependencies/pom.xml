@@ -23,6 +23,15 @@
             <artifactId>segmantix-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wizzdi</groupId>
+            <artifactId>segmantix-jpa-store</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wizzdi</groupId>
+            <artifactId>segmantix-jpa-spring</artifactId>
+        </dependency>
+        <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
