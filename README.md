@@ -37,7 +37,7 @@ Add the following dependency to your Maven project:
 <dependency>
     <groupId>com.wizzdi</groupId>
     <artifactId>segmantix-core</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -61,7 +61,7 @@ To use SegmantiX, you need to implement the following interfaces. These can be i
 
 Additionally, you need to implement the following components:
 
-- `Cache`: Caches the results of `SecurityLinkProvider` to avoid fetching repeatedly.
+- `SegmantixCache`: Caches the results of `SecurityLinkProvider` to avoid fetching repeatedly.
 - `FieldPathProvider`: Extracts the required paths for executing a secured query from a JPA root.
 - `OperationGroupLinkProvider`: Provides operations for given operation groups.
 - `SecurityLinkProvider`: Provides a list of relevant links based on a security context.
@@ -105,7 +105,6 @@ mvn test
 
 ## Future Work
 
-- Add concrete implementations for required interfaces (`jpa-store` and `in-memory-store`).
 - Introduce a permission management UI for enhanced usability.
 - Migrate features from FlexiCore to SegmantiX to create the 'jpa-store' implementation
 

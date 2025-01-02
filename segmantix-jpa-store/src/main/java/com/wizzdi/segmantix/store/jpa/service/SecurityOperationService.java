@@ -49,7 +49,7 @@ public class SecurityOperationService implements SegmantixService {
     }
 
     public SecurityOperation getAllOperations() {
-        return getByIdOrNull(getStandardAccessId(All.class));
+        return operationRepository.getAllOperations();
     }
 
     public SecurityOperation getOperation(Method method) {

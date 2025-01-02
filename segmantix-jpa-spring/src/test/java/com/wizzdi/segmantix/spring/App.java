@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @EnableSegmantix
-@EntityScan(basePackageClasses= {Baseclass.class,TestEntity.class})
+@EntityScan(basePackageClasses=TestEntity.class)
 public class App {
 
 

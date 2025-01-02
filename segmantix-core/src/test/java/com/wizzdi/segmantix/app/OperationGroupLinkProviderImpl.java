@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+@Component
 public class OperationGroupLinkProviderImpl implements OperationGroupLinkProvider {
     @Override
     public List<IOperationGroupLink> listAllOperationGroupLinks(List<IOperation> operations) {

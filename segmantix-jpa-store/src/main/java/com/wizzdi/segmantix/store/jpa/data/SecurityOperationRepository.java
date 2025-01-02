@@ -17,11 +17,14 @@ import java.util.stream.Stream;
 public class SecurityOperationRepository  implements SegmantixRepository {
 
 	private final Map<String,SecurityOperation> securityOperations=new ConcurrentHashMap<>();
+	private final SecurityOperation allOperations;
 
 	public SecurityOperationRepository(Operations operations) {
 		for (SecurityOperation operation : operations.operations()) {
 			securityOperations.put(operation.id(),operation);
 		}
+		allOperations=operations.allOperations();
+		securityOperations.put(allOperations.id(),allOperations);
 	}
 
 	public List<SecurityOperation> listAllOperations(SecurityOperationFilter securityOperationFilter ) {
@@ -73,5 +76,8 @@ public class SecurityOperationRepository  implements SegmantixRepository {
 	public SecurityOperation addOperation(SecurityOperation securityOperation) {
 		securityOperations.put(securityOperation.id(),securityOperation);
 		return securityOperation;
+	}
+	public SecurityOperation getAllOperations(){
+		return allOperations;
 	}
 }

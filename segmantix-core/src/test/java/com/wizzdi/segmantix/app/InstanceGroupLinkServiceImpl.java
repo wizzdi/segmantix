@@ -5,9 +5,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
-
+@Component
 public class InstanceGroupLinkServiceImpl {
-    
+    @PersistenceContext
     private EntityManager em;
 
     @Transactional
