@@ -32,7 +32,7 @@ It is recommended to use the `segmantix-dependencies` BOM (Bill of Materials) in
         <dependency>
             <groupId>com.wizzdi</groupId>
             <artifactId>segmantix-dependencies</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.2</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
