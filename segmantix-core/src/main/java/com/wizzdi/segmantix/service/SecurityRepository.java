@@ -189,7 +189,7 @@ public class SecurityRepository {
 				List<String> roleAllowedIds = role.allowed().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
 						idPath.in(roleAllowedIds),
-						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied)),
+						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDenied)),
 						user.deniedPermissionGroups().isEmpty()?cb.and():cb.not(permissionGroupPredicate(cb,r,user.deniedPermissionGroups(),fieldPathProvider,join))
 				));
 			}
@@ -199,8 +199,8 @@ public class SecurityRepository {
 				securityPreds.add(cb.and(
 						cb.equal(tenantIdPath, tenant.getId()),
 						role.allowAll() ? cb.and() : typePath!=null?typePath.in(roleAllowedTypes):roleAllowedTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
-						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDeniedIds)),
-						role.denied().isEmpty() ? cb.and() : cb.not(r.in(roleDeniedIds)),
+						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
+						role.denied().isEmpty() ? cb.and() : cb.not(idPath.in(roleDeniedIds)),
 						user.deniedPermissionGroups().isEmpty()?cb.and():cb.not(permissionGroupPredicate(cb,r,user.deniedPermissionGroups(),fieldPathProvider,join)),
 						role.deniedPermissionGroups().isEmpty()?cb.and():cb.not(permissionGroupPredicate(cb,r,role.deniedPermissionGroups(),fieldPathProvider,join))
 
@@ -216,7 +216,7 @@ public class SecurityRepository {
 			if (!role.allowedPermissionGroups().isEmpty()) {
 				securityPreds.add(cb.and(
 						permissionGroupPredicate(cb,r,role.allowedPermissionGroups(),fieldPathProvider,join),
-						userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied)),
+						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDenied)),
 						user.deniedPermissionGroups().isEmpty()?cb.and():cb.not(permissionGroupPredicate(cb,r,user.deniedPermissionGroups(),fieldPathProvider,join))
 
 				));
@@ -248,8 +248,8 @@ public class SecurityRepository {
 		if (!tenantAllowedPermissionGroups.isEmpty()) {
 			securityPreds.add(cb.and(
 					permissionGroupPredicate(cb,r,tenantAllowedPermissionGroups,fieldPathProvider,join),
-					userDenied.isEmpty() ? cb.and() : cb.not(r.in(userDenied)),
-					roleDenied.isEmpty() ? cb.and() : cb.not(r.in(roleDenied))
+					userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDenied)),
+					roleDenied.isEmpty() ? cb.and() : cb.not(idPath.in(roleDenied))
 
 			));
 		}
