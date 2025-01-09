@@ -1,9 +1,10 @@
 
 # SegmantiX
 
-SegmantiX is a robust multi-tenancy and access control library for Java applications.
+SegmantiX is a robust multi-tenancy and **data** access control library for Java applications.
 
-This library is a fork of the FlexiCore project, designed to isolate multi-tenancy features. Framework-agnostic and lightweight, it relies solely on JPA and `slf4j-api`, offering fine-grained security controls for managing permissions across users, roles, tenants, and instance groups.
+This library is a fork of the [FlexiCore](https://github.com/wizzdi/flexicore-boot) project , designed to isolate multi-tenancy features. Framework-agnostic and lightweight, it relies solely on JPA and `slf4j-api`, offering fine-grained security controls for managing permissions across users, roles, tenants, and instance groups.
+
 
 ## Features
 
@@ -32,7 +33,7 @@ It is recommended to use the `segmantix-dependencies` BOM (Bill of Materials) in
         <dependency>
             <groupId>com.wizzdi</groupId>
             <artifactId>segmantix-dependencies</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.2</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
