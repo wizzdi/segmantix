@@ -100,7 +100,7 @@ Operations operations = new Operations(List.of(
     new SecurityOperation(null, null, "write", "Write Operation", null, Access.DENY, null)
 ), allOperations);
 
-SecurityRepository securityRepository = SegmantixJPAStore.create(
+SecurityRepository criteriaApiSecurityRepository = SegmantixJPAStore.create(
     entityManager,
     segmantixCache,
     operations.allOperations()
@@ -232,7 +232,7 @@ public List<TestEntity> listAllTestEntities(
     CriteriaQuery<TestEntity> q = cb.createQuery(TestEntity.class);
     Root<TestEntity> r = q.from(TestEntity.class);
     List<Predicate> preds = new ArrayList<>();
-    securityRepository.addSecurityPredicates(cb, q, r, preds, securityContext);
+    criteriaApiSecurityRepository.addSecurityPredicates(cb, q, r, preds, securityContext);
     q.select(r).where(preds.toArray(new Predicate[0]));
     TypedQuery<TestEntity> query = em.createQuery(q);
     return query.getResultList();

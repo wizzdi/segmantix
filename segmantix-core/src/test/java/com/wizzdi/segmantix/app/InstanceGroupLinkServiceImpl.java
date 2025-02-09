@@ -12,6 +12,6 @@ public class InstanceGroupLinkServiceImpl {
 
     @Transactional
     public void clear() {
-        em.createNativeQuery("update test_entity set permission_group_id=null").executeUpdate();
+        em.createNativeQuery("update testentity set permissiongroupid=null").executeUpdate();
     }
 }

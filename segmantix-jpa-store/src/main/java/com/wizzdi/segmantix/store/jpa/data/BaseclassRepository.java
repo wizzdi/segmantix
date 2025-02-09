@@ -1,16 +1,15 @@
 package com.wizzdi.segmantix.store.jpa.data;
 
+import com.wizzdi.segmantix.service.CriteriaApiSecurityRepository;
 import com.wizzdi.segmantix.store.jpa.interfaces.SegmantixRepository;
 import com.wizzdi.segmantix.store.jpa.model.*;
 
-import com.wizzdi.segmantix.service.SecurityRepository;
 import com.wizzdi.segmantix.store.jpa.request.BaseclassFilter;
 import com.wizzdi.segmantix.store.jpa.request.BasicPropertiesFilter;
 import com.wizzdi.segmantix.store.jpa.request.SoftDeleteOption;
 import com.wizzdi.segmantix.store.jpa.service.SecurityContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Table;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CommonAbstractCriteria;
@@ -39,12 +38,12 @@ public class BaseclassRepository implements SegmantixRepository {
 	private static final Logger logger = LoggerFactory.getLogger(BaseclassRepository.class);
 
 	private final EntityManager em;
-	private final SecurityRepository securityRepository;
+	private final CriteriaApiSecurityRepository criteriaApiSecurityRepository;
 	private final BasicRepository basicRepository;
 
-	public BaseclassRepository(EntityManager em, SecurityRepository securityRepository, BasicRepository basicRepository) {
+	public BaseclassRepository(EntityManager em, CriteriaApiSecurityRepository criteriaApiSecurityRepository, BasicRepository basicRepository) {
 		this.em = em;
-		this.securityRepository = securityRepository;
+		this.criteriaApiSecurityRepository = criteriaApiSecurityRepository;
 		this.basicRepository = basicRepository;
 	}
 
@@ -98,11 +97,11 @@ public class BaseclassRepository implements SegmantixRepository {
 	}
 
 	public <T extends Baseclass> void addBaseclassPredicates(CriteriaBuilder cb, CommonAbstractCriteria q, From<?, T> r, List<Predicate> predicates, SecurityContext securityContext) {
-		securityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
+		criteriaApiSecurityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
 	}
 
 	public boolean requiresSecurityPredicates(SecurityContext securityContext) {
-		return securityRepository.requiresSecurityPredicates(securityContext);
+		return criteriaApiSecurityRepository.requiresSecurityPredicates(securityContext);
 	}
 
 
@@ -208,7 +207,7 @@ public class BaseclassRepository implements SegmantixRepository {
 		CriteriaQuery<T> q=cb.createQuery(c);
 		Root<T> r=q.from(c);
 		List<Predicate> predicates=new ArrayList<>();
-		securityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
+		criteriaApiSecurityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
 		q.select(r).where(predicates.toArray(Predicate[]::new));
 		TypedQuery<T> query = em.createQuery(q);
 		BasicRepository.addPagination(baseclassFilter,query);
@@ -223,7 +222,7 @@ public class BaseclassRepository implements SegmantixRepository {
 		CriteriaQuery<Long> q=cb.createQuery(Long.class);
 		Root<T> r=q.from(c);
 		List<Predicate> predicates=new ArrayList<>();
-		securityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
+		criteriaApiSecurityRepository.addSecurityPredicates(em,cb,q,r,predicates,securityContext);
 		q.select(cb.count(r)).where(predicates.toArray(Predicate[]::new));
 		TypedQuery<Long> query = em.createQuery(q);
 		return query.getSingleResult();

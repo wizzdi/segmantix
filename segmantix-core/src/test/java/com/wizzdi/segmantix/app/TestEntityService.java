@@ -5,8 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Component
 public class TestEntityService {
@@ -66,5 +70,13 @@ public class TestEntityService {
     @Transactional
     public void massMerge(List<?> toMerge) {
         testEntityRepository.massMerge(toMerge);
+    }
+
+    @Transactional
+    public List<TestEntity> execute(Function<Connection,List<TestEntity>> f) throws SQLException {
+        try(Connection connection = testEntityRepository.getConnection()){
+            return f.apply(connection);
+
+        }
     }
 }

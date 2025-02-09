@@ -1,7 +1,7 @@
 package com.wizzdi.segmantix.app;
 
 import com.wizzdi.segmantix.api.model.ISecurityContext;
-import com.wizzdi.segmantix.service.SecurityRepository;
+import com.wizzdi.segmantix.service.CriteriaApiSecurityRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -9,10 +9,15 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.EntityManagerFactoryInfo;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +28,7 @@ public class TestEntityRepository {
     private EntityManager em;
 
     @Autowired
-    private SecurityRepository securedBasicRepository;
+    private CriteriaApiSecurityRepository securedBasicRepository;
 
 
     public List<TestEntity> listAllTestEntities(
@@ -49,5 +54,11 @@ public class TestEntityRepository {
 
             em.merge(o);
         }
+    }
+
+    public Connection getConnection() throws SQLException {
+      EntityManagerFactoryInfo info = (EntityManagerFactoryInfo) em.getEntityManagerFactory();
+    Connection connection = info.getDataSource().getConnection();
+    return connection;
     }
 }

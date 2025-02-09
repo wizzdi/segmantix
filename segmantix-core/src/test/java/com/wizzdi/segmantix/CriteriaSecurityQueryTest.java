@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // deactivate the default behaviour
 
 
-public class SecurityQueryTest {
+public class CriteriaSecurityQueryTest {
 	    private final static PostgreSQLContainer postgresqlContainer = new PostgreSQLContainer("postgres:15")
 
 			.withDatabaseName("flexicore-test")

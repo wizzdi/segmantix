@@ -2,7 +2,7 @@ package com.wizzdi.segmantix.spring.config;
 
 import com.wizzdi.segmantix.api.service.SegmantixCache;
 import com.wizzdi.segmantix.model.Access;
-import com.wizzdi.segmantix.service.SecurityRepository;
+import com.wizzdi.segmantix.service.CriteriaApiSecurityRepository;
 import com.wizzdi.segmantix.store.jpa.data.Operations;
 import com.wizzdi.segmantix.store.jpa.interfaces.SegmantixRepository;
 import com.wizzdi.segmantix.store.jpa.interfaces.SegmantixService;
@@ -36,7 +36,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class SegmantixSpringConfig {
 
     @Bean
-    public SecurityRepository securityRepository(EntityManager em, SegmantixCache segmantixCache, SecurityOperationService securityOperationService){
+    public CriteriaApiSecurityRepository securityRepository(EntityManager em, SegmantixCache segmantixCache, SecurityOperationService securityOperationService){
         return SegmantixJPAStore.create(em,segmantixCache,securityOperationService.getAllOperations());
     }
     @Bean
