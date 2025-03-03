@@ -167,7 +167,7 @@ public class SecurityRepository {
 			Set<String> allowedTypes = user.allowedTypes().stream().map(f -> f.type()).collect(Collectors.toSet());
 			securityPreds.add(cb.and(
 					tenantIdPath.in(securityContext.tenants().stream().map(f->f.getId()).toList()),
-					user.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTypes):allowedTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
+					user.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTypes):containsAnyOf(types,allowedTypes)?cb.and():cb.or(),
 					userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
 					user.deniedPermissionGroups().isEmpty()?cb.and(): cb.not(permissionGroupPredicate(cb,r,user.deniedPermissionGroups(),fieldPathProvider,join))
 			));
@@ -198,7 +198,7 @@ public class SecurityRepository {
 				List<String> roleDeniedIds = role.denied().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
 						cb.equal(tenantIdPath, tenant.getId()),
-						role.allowAll() ? cb.and() : typePath!=null?typePath.in(roleAllowedTypes):roleAllowedTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
+						role.allowAll() ? cb.and() : typePath!=null?typePath.in(roleAllowedTypes):containsAnyOf(types,roleAllowedTypes)?cb.and():cb.or(),
 						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
 						role.denied().isEmpty() ? cb.and() : cb.not(idPath.in(roleDeniedIds)),
 						user.deniedPermissionGroups().isEmpty()?cb.and():cb.not(permissionGroupPredicate(cb,r,user.deniedPermissionGroups(),fieldPathProvider,join)),
@@ -260,7 +260,7 @@ public class SecurityRepository {
 				List<String> tenantDeniedIds = tenant.denied().stream().map(f -> f.id()).toList();
 				securityPreds.add(cb.and(
 						cb.equal(tenantIdPath, tenantEntity.getId()),
-						tenant.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTenantTypes):allowedTenantTypes.contains(r.getJavaType().getCanonicalName())?cb.and():cb.or(),
+						tenant.allowAll() ? cb.and() : typePath!=null?typePath.in(allowedTenantTypes):containsAnyOf(types,allowedTenantTypes)?cb.and():cb.or(),
 						userDenied.isEmpty() ? cb.and() : cb.not(idPath.in(userDeniedIds)),
 						roleDenied.isEmpty() ? cb.and() : cb.not(idPath.in(roleDeniedIds)),
 						tenant.denied().isEmpty() ? cb.and() : cb.not(idPath.in(tenantDeniedIds)),
@@ -283,6 +283,9 @@ public class SecurityRepository {
 
 		predicates.add(cb.and(tenantIdPath.in(securityContext.tenants().stream().map(f->f.getId()).toList()),cb.or(securityPreds.toArray(new Predicate[0]))));
 
+	}
+	private boolean containsAnyOf(Set<String> s,Set<String> s2){
+		return s2.stream().anyMatch(s::contains);
 	}
 
 	private <T> Set<String> getRelevantTypes(EntityManager em, From<?, T> r) {
